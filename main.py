@@ -30,8 +30,8 @@ def home():
     }
 
 
-@app.get("/positions")
-def get_positions():
+@app.get("/accounts")
+def get_accounts():
     """
     Führt in EINEM Schritt aus:
     1) /api/v1/session/encryptionKey -> encryptionKey + timeStamp holen
@@ -70,14 +70,17 @@ def get_positions():
         encryption_key_b64, time_stamp, CAPITAL_PASSWORD
     )
 
-    # print(enc_data)
+    print(enc_data)
 
     # ----------------------------------------------------
     # 3) LOGIN (SESSION) -> CST, X-SECURITY-TOKEN
     # ----------------------------------------------------
-    login_payload = {"identifier": CAPITAL_USER, "password": CAPITAL_PASSWORD}
+    login_payload = {
+        "encryptedPassword": "true",
+        "identifier": CAPITAL_USER,
+        "password": encrypted_password_b64,
+    }
 
-    # print(login_payload)
     try:
         login_resp = requests.post(
             f"{CAPITAL_BASE_URL}/api/v1/session",
@@ -92,7 +95,7 @@ def get_positions():
     cst = login_resp.headers.get("CST")
     x_sec = login_resp.headers.get("X-SECURITY-TOKEN")
 
-    # print("✨", x_sec)
+    print("✨", x_sec)
 
     if not cst or not x_sec:
         raise HTTPException(
@@ -119,4 +122,3 @@ def get_positions():
         )
 
     return pos_resp.json()
-
