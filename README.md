@@ -19,3 +19,7 @@ CAPITAL_USER=your_user_email
 ```bash
 uvicorn main:app --reload
 ```
+
+## Open your browser
+
+`http://localhost:8000/accounts`
